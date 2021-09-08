@@ -1,5 +1,5 @@
 defmodule MyApp.UserServiceV3 do
-  def store(name, date) do
+  def store(name, date, write_fn) do
     ymd = "#{date.year}-#{date.month}-#{date.day}"
 
     line = name
@@ -7,7 +7,7 @@ defmodule MyApp.UserServiceV3 do
       |> Kernel.++([ymd])
       |> Enum.join(",")
 
-    File.write!("temp.txt", line <> "\n", [:append])
+    write_fn.("temp.txt", line <> "\n", [:append])
     line
   end
 end
