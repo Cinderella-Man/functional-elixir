@@ -7,7 +7,7 @@ defmodule MyApp.UserServiceV3 do
       |> Kernel.++([ymd])
       |> Enum.join(",")
 
-    write_fn.("temp.txt", line <> "\n", [:append])
+    :ok = write_fn.("temp.txt", line <> "\n", [:append])
     line
   end
 end

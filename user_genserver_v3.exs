@@ -9,7 +9,7 @@ defmodule MyApp.UserGenServerV3 do
 
   def handle_call({:store, name}, _from, state) do
     date = DateTime.utc_now()
-    write_fn = &File.write!/3
+    write_fn = &File.write/3
     line = MyApp.UserServiceV3.store(name, date, write_fn)
     {:reply, line, state}
   end

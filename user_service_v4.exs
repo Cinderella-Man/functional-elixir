@@ -1,8 +1,7 @@
 defmodule MyApp.UserServiceV4 do
-  def store(name) do
-    date = DateTime.utc_now()
+  def store(name, date \\ DateTime.utc_now(), write_fn \\ &File.write/3) do
     line = prepare_line(name, date)
-    File.write!("temp.txt", line <> "\n", [:append])
+    :ok = write_fn.("temp.txt", line <> "\n", [:append])
     line
   end
 
