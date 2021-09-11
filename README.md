@@ -1,20 +1,21 @@
-# Functional programming in Elixir
+# FunEx
 
-This repository contains sample snippets for the video released on YouTube.
+**TODO: Add description**
 
-## How to
+## Installation
 
-Start `iex` session:
+If [available in Hex](https://hex.pm/docs/publish), the package can be installed
+by adding `funex` to your list of dependencies in `mix.exs`:
 
+```elixir
+def deps do
+  [
+    {:funex, "~> 0.1.0"}
+  ]
+end
 ```
-$ iex
-```
 
-then load the file that you are interested in:
+Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
+and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
+be found at [https://hexdocs.pm/funex](https://hexdocs.pm/funex).
 
-```
-iex(1)> c("user_controller.exs")
-[X]
-iex(2)> MyAppWeb.UserController.store(nil, %{"name" => "Kamil Skowron"})
-:ok
-```
