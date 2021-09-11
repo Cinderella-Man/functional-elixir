@@ -1,13 +1,13 @@
 defmodule MyAppWeb.UserControllerV1 do
   use MyAppWeb, :controller
 
-  def store(conn, %{"name" => name}) do
-    d = DateTime.utc_now()
-    ymd = "#{d.year}-#{d.month}-#{d.day}"
+  def allowed?(conn, %{"email" => email_address}) do
+    {:ok, data} = File.read("list.txt")
 
-    line = name
-      |> String.split(" ")
-      |> Kernel.++([ymd])
+    line = data
+      |> String.split("\n", trim: true)
+      |> Enum.map(&(String.split(&1, ",")))
+      |> Enum.find(fn([_, _, email] -> email == email_address) 
       |> Enum.join(",")
 
     render(conn, "temp.html", line: line)
