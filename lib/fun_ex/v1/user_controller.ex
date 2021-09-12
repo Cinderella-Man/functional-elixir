@@ -1,5 +1,5 @@
 defmodule FunEx.V1.UserController do
-  # use MyAppWeb, :controller
+  # use FunEx, :controller
 
   def allowed?(conn, %{"email" => email}) do
     {:ok, json} = File.read("list.json")

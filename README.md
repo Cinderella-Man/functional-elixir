@@ -1,21 +1,24 @@
-# FunEx
+# Functional Elixir
 
-**TODO: Add description**
+The source code used to explain functional programming concepts in Elixir inside [Functional Elixir](https://www.youtube.com/c/kamilskowron).
 
-## Installation
+### How to use
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `funex` to your list of dependencies in `mix.exs`:
+The video goes through iterations of code starting with version `V1` in the `FunEx.V1` namespace going up to `V4` in the `FunEx.V4` namespace.
 
-```elixir
-def deps do
-  [
-    {:funex, "~> 0.1.0"}
-  ]
-end
+Example of calling `V1`:
+
 ```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/funex](https://hexdocs.pm/funex).
-
+$ iex -S mix
+...
+iex(1)> FunEx.V1.UserController.allowed?(nil, %{"email" => "test@example.com"})
+true
+iex(2)> FunEx.V1.UserController.allowed?(nil, %{"email" => "missing@example.com"})
+false
+iex(3)> {:ok, pid} = FunEx.V1.UserGenServer.start_link(nil)
+{:ok, #PID<0.193.0>}
+iex(4)> GenServer.call(pid, {:allowed?, "test@example.com"})
+true
+iex(5)> GenServer.call(pid, {:allowed?, "missing@example.com"})
+false
+```
