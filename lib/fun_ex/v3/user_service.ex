@@ -8,8 +8,8 @@ defmodule FunEx.V3.UserService do
     {:ok, data} = Jason.decode(json)
 
     data
-      |> Enum.map(&(Map.get(&1, "email")))
-      |> Enum.map(&(String.downcase/1))
-      |> Enum.any?(&(&1 == email))
+    |> Enum.map(&Map.get(&1, "email", ""))
+    |> Enum.map(&String.downcase/1)
+    |> Enum.any?(&(&1 == email))
   end
 end

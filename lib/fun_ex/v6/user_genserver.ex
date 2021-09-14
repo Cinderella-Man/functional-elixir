@@ -1,4 +1,4 @@
-defmodule FunEx.V3.UserGenServer do
+defmodule FunEx.V6.UserGenServer do
   use GenServer
 
   def start_link(args) do
@@ -8,7 +8,7 @@ defmodule FunEx.V3.UserGenServer do
   def init(_args), do: {:ok, nil}
 
   def handle_call({:allowed?, email}, _from, state) do
-    result = FunEx.V3.UserService.allowed?(email, &File.read/1)
+    result = FunEx.V6.UserService.allowed?(email)
     {:reply, result, state}
   end
 end
