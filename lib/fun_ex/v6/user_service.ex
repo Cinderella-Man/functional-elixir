@@ -3,7 +3,7 @@ defmodule FunEx.V6.UserService do
 
   def allowed?(email, read_fn \\ &File.read/1) do
     read_fn.("list.json")
-    |> chain(
+    |> chain(&Jason.decode/1)
     |> fapply(&check_email(&1, email))
     |> fold(& &1, fn error ->
       Logger.error("User service error occurred")
@@ -13,10 +13,10 @@ defmodule FunEx.V6.UserService do
   end
 
   def check_email(data, email) do
-    Jason.decode(json)
-    |> map(&Map.get(&1, "email", ""))
-    |> map(&String.downcase/1)
-    |> fapply(&Enum.any?(&1, fn e -> e == email end))
+    data
+    |> Enum.map(&Map.get(&1, "email", ""))
+    |> Enum.map(&String.downcase/1)
+    |> Enum.any?(& &1 == email)
   end
 
   def map({:ok, data}, iteration_fn) do

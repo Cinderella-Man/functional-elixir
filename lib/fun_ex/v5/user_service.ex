@@ -3,8 +3,7 @@ defmodule FunEx.V5.UserService do
 
   def allowed?(email, read_fn \\ &File.read/1) do
     with {:ok, json} <- read_fn.("list.json"),
-         {:ok, data} <- Jason.decode(json)
-    do
+         {:ok, data} <- Jason.decode(json) do
       check_email(data, email)
     else
       {:error, msg} ->
