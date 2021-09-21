@@ -1,4 +1,4 @@
-defmodule FunEx.V3.UserGenServer do
+defmodule FunEx.V5.TimeOffGenServer do
   use GenServer
 
   def start_link(args) do
@@ -7,8 +7,8 @@ defmodule FunEx.V3.UserGenServer do
 
   def init(_args), do: {:ok, nil}
 
-  def handle_call({:allowed?, email}, _from, state) do
-    result = FunEx.V3.UserService.allowed?(email, &File.read/1)
+  def handle_call({:next_holiday, date}, _from, state) do
+    result = FunEx.V5.TimeOffService.next_holiday(date)
     {:reply, result, state}
   end
 end

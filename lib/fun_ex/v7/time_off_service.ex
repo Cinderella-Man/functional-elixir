@@ -1,22 +1,26 @@
-defmodule FunEx.V7.UserService do
+defmodule FunEx.V7.TimeOffService do
   require Logger
 
-  def allowed?(email, read_fn \\ &File.read/1) do
-    (fn () -> read_fn.("list.json") end)
-    |> chain(&Jason.decode/1)
-    |> fapply(&check_email(&1, email))
-    |> fold(& &1, fn error ->
-      Logger.error("User service error occurred")
-      IO.inspect(error)
-      false
-    end)
+  def next_holiday(date, read_fn \\ &File.read/1) do
+    # (fn () -> read_fn.("list.json") end)
+    # |> chain(&Jason.decode/1)
+    # |> fapply(&check_email(&1, email))
+    # |> fold(& &1, fn error ->
+    #   Logger.error("User service error occurred")
+    #   IO.inspect(error)
+    #   false
+    # end)
   end
 
-  def check_email(data, email) do
-    data
-    |> Enum.map(&Map.get(&1, "email", ""))
-    |> Enum.map(&String.downcase/1)
-    |> Enum.any?(& &1 == email)
+  def find_next_date(bank_holidays, date) do
+    bank_holidays
+    |> Enum.find(fn(bank_holiday) ->
+      {:ok, bank_holiday_date} = bank_holiday
+        |> Map.get("date", "1970-01-01")
+        |> Date.from_iso8601()
+
+      Timex.diff(bank_holiday_date, date) >= 0
+    end)
   end
 
   def chain(acc, function) do
