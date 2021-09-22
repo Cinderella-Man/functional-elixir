@@ -7,8 +7,8 @@ defmodule FunEx.V5.TimeOffGenServer do
 
   def init(_args), do: {:ok, nil}
 
-  def handle_call({:next_holiday, date}, _from, state) do
-    result = FunEx.V5.TimeOffService.next_holiday(date)
+  def handle_call({:next_holiday, date, territory}, _from, state) do
+    result = FunEx.V5.TimeOffService.next_holiday(date, territory)
     {:reply, result, state}
   end
 end

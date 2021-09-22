@@ -7,13 +7,13 @@ defmodule FunEx.V1.TimeOffGenServer do
 
   def init(_args), do: {:ok, nil}
 
-  def handle_call({:next_holiday, date}, _from, state) do
-    {:ok, date} = Date.from_iso8601(date)
+  def handle_call({:next_holiday, date_string, territory}, _from, state) do
     {:ok, json} = File.read("bank_holidays.json")
     {:ok, data} = Jason.decode(json)
+    {:ok, date} = Date.from_iso8601(date_string)
 
     bank_holidays = data
-      |> Map.get("england-and-wales", %{})
+      |> Map.get(territory, %{})
       |> Map.get("events", [])
 
     result =

@@ -1,7 +1,7 @@
 defmodule FunEx.V7.TimeOffService do
   require Logger
 
-  def next_holiday(date, read_fn \\ &File.read/1) do
+  def next_holiday(date, territory, read_fn \\ &File.read/1) do
     # (fn () -> read_fn.("list.json") end)
     # |> chain(&Jason.decode/1)
     # |> fapply(&check_email(&1, email))
@@ -12,7 +12,7 @@ defmodule FunEx.V7.TimeOffService do
     # end)
   end
 
-  def find_next_date(bank_holidays, date) do
+  def find_next_date(bank_holidays, date, territory) do
     bank_holidays
     |> Enum.find(fn(bank_holiday) ->
       {:ok, bank_holiday_date} = bank_holiday

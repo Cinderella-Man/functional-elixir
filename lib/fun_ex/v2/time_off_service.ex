@@ -1,11 +1,11 @@
 defmodule FunEx.V2.TimeOffService do
-  def next_holiday(date, read_fn) do
-    {:ok, date} = Date.from_iso8601(date)
+  def next_holiday(date_string, territory, read_fn) do
+    {:ok, date} = Date.from_iso8601(date_string)
     {:ok, json} = read_fn.("bank_holidays.json")
     {:ok, data} = Jason.decode(json)
 
     bank_holidays = data
-      |> Map.get("england-and-wales", %{})
+      |> Map.get(territory, %{})
       |> Map.get("events", [])
 
     bank_holidays

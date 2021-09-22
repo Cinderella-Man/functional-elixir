@@ -1,7 +1,7 @@
 defmodule FunEx.V6.TimeOffService do
   require Logger
 
-  def next_holiday(date, read_fn \\ &File.read/1) do
+  def next_holiday(date, territory, read_fn \\ &File.read/1) do
     # read_fn.("bank_holidays.json")
     # |> chain(&Jason.decode/1)
     # |> fold(fn (data) ->
