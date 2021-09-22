@@ -2,9 +2,9 @@ defmodule FunEx.V1.TimeOffController do
   # use FunEx, :controller
 
   def next_holiday(conn, %{"date" => date_string, "territory" => territory}) do
+    {:ok, date} = Date.from_iso8601(date_string)
     {:ok, json} = File.read("bank_holidays.json")
     {:ok, data} = Jason.decode(json)
-    {:ok, date} = Date.from_iso8601(date_string)
 
     bank_holidays = data
       |> Map.get(territory, %{})

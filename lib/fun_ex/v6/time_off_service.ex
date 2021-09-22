@@ -1,21 +1,23 @@
 defmodule FunEx.V6.TimeOffService do
   require Logger
 
-  def next_holiday(date, territory, read_fn \\ &File.read/1) do
-    # read_fn.("bank_holidays.json")
-    # |> chain(&Jason.decode/1)
-    # |> fold(fn (data) ->
-    #     find_next_date(bank_holidays, date)
-    # end, &{:error}
-    # |> fapply(&check_email(&1, email))
-    # |> fold(& &1, fn error ->
-    #   Logger.error("User service error occurred")
-    #   IO.inspect(error)
-    #   false
-    # end)
+  def next_holiday(date_string, territory, read_fn \\ &File.read/1) do
+    {:ok, date} = Date.from_iso8601(date_string)
+    
+    read_fn.("bank_holidays.json")
+    |> chain(&Jason.decode/1)
+    |> fapply(&find_next_date(&1, date, territory))
+    |> fold(& &1, fn error ->
+      Logger.error("Time Off service error occurred: #{inspect(error)}")
+      false
+    end)
   end
 
-  def find_next_date(bank_holidays, date) do
+  def find_next_date(data, date, territory) do
+    bank_holidays = data
+      |> Map.get(territory, %{})
+      |> Map.get("events", [])
+
     bank_holidays
     |> Enum.find(fn(bank_holiday) ->
       {:ok, bank_holiday_date} = bank_holiday
