@@ -21,7 +21,7 @@ defmodule FunEx.V8.TimeOffService do
     bank_holidays
     |> Enum.find(fn(bank_holiday) ->
       {:ok, bank_holiday_date} = bank_holiday
-        |> Map.get("date", "1970-01-01")
+        |> Map.get("date", "2020-01-01")
         |> Date.from_iso8601()
 
       Timex.diff(bank_holiday_date, date) >= 0

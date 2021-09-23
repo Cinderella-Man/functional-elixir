@@ -1,5 +1,5 @@
 defmodule FunEx.V1.TimeOffController do
-  # use FunEx, :controller
+  use FunEx, :controller
 
   def next_holiday(conn, %{"date" => date_string, "territory" => territory}) do
     {:ok, date} = Date.from_iso8601(date_string)
@@ -14,12 +14,12 @@ defmodule FunEx.V1.TimeOffController do
       bank_holidays
       |> Enum.find(fn(bank_holiday) ->
         {:ok, bank_holiday_date} = bank_holiday
-          |> Map.get("date", "1970-01-01")
+          |> Map.get("date", "2020-01-01")
           |> Date.from_iso8601()
 
         Timex.diff(bank_holiday_date, date) >= 0
       end)
 
-    # render(conn, "temp.html", result: result)
+    render(conn, "index.json", result: result)
   end
 end
