@@ -1,4 +1,4 @@
-defmodule FunEx.V2.TimeOffGenServer do
+defmodule FunEx.V10.TimeOffGenServer do
   use GenServer
 
   def start_link(args) do
@@ -8,7 +8,7 @@ defmodule FunEx.V2.TimeOffGenServer do
   def init(_args), do: {:ok, nil}
 
   def handle_call({:next_holiday, date, territory}, _from, state) do
-    result = FunEx.V2.TimeOffService.next_holiday(date, territory)
+    result = FunEx.V10.TimeOffService.next_holiday(date, territory)
     {:reply, result, state}
   end
 end

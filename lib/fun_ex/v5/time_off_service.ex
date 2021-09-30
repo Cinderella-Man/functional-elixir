@@ -1,17 +1,10 @@
 defmodule FunEx.V5.TimeOffService do
-  require Logger
-
   def next_holiday(date_string, territory, read_fn \\ &File.read/1) do
-    with {:ok, date} <- Date.from_iso8601(date_string),
-         {:ok, json} <- read_fn.("bank_holidays.json"),
-         {:ok, data} <- Jason.decode(json)
-    do
-      find_next_date(data, date, territory)
-    else
-      {:error, msg} ->
-        Logger.error("Unable to find next date: #{msg}")
-        false
-    end
+    {:ok, date} = Date.from_iso8601(date_string)
+    {:ok, json} = read_fn.("bank_holidays.json")
+    {:ok, data} = Jason.decode(json)
+
+    find_next_date(data, date, territory)
   end
 
   def find_next_date(data, date, territory) do

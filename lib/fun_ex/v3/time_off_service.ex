@@ -3,10 +3,7 @@ defmodule FunEx.V3.TimeOffService do
     {:ok, date} = Date.from_iso8601(date_string)
     {:ok, json} = read_fn.("bank_holidays.json")
     {:ok, data} = Jason.decode(json)
-    find_next_date(data, date, territory)
-  end
 
-  def find_next_date(data, date, territory) do
     bank_holidays = data
       |> Map.get(territory, %{})
       |> Map.get("events", [])
