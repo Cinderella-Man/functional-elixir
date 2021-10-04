@@ -1,14 +1,18 @@
-defmodule FunEx.V10.TimeOffService do
+defmodule FunEx.V11.TimeOffService do
   require Logger
 
   def next_holiday(date_string, territory, opts \\ []) do
     read_fn = Keyword.get(opts, :read_fn, &File.read/1)
 
-    {:ok, date} = Date.from_iso8601(date_string)
-
     fn -> read_fn.("bank_holidays.json") end
     |> chain(&Jason.decode/1)
-    |> fapply(&find_next_date(&1, date, territory))
+    |> fold(
+      fn data ->
+        Date.from_iso8601(date_string)
+        |> fapply(&find_next_date(data, &1, territory))
+      end,
+      &{:error, &1}
+    )
     |> fold(& &1, fn error ->
       Logger.error("Time Off service error occurred: #{inspect(error)}")
       false
@@ -41,14 +45,20 @@ defmodule FunEx.V10.TimeOffService do
     end
   end
 
-  def fapply(acc, function) do
-    fn ->
-      case acc.() do
-        {:ok, data} -> {:ok, function.(data)}
-        {:error, error} -> {:error, error}
-      end
-    end
+  # def fapply(acc, function) do
+  #   fn () ->
+  #     case acc.() do
+  #       {:ok, data} -> {:ok, function.(data)}
+  #       {:error, error} -> {:error, error}
+  #     end
+  #   end
+  # end
+
+  def fapply({:ok, data}, function) do
+    {:ok, function.(data)}
   end
+
+  def fapply({:error, error}, _function), do: {:error, error}
 
   def map(acc, iteration_fn) do
     fn ->

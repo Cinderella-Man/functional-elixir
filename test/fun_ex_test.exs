@@ -170,4 +170,20 @@ defmodule FunExTest do
              {:next_holiday, @date, @territory}
            ) == @expected_result
   end
+
+  test "V11 Controller" do
+    assert FunEx.V11.TimeOffController.next_holiday(
+             nil,
+             %{"date" => @date, "territory" => @territory}
+           ) == [{:result, @expected_result}]
+  end
+
+  test "V11 GenServer" do
+    {:ok, pid} = FunEx.V11.TimeOffGenServer.start_link()
+
+    assert GenServer.call(
+             pid,
+             {:next_holiday, @date, @territory}
+           ) == @expected_result
+  end
 end
