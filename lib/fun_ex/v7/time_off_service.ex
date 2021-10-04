@@ -1,9 +1,11 @@
 defmodule FunEx.V7.TimeOffService do
   require Logger
 
-  def next_holiday(date_string, territory, read_fn \\ &File.read/1) do
+  def next_holiday(date_string, territory, opts \\ []) do
+    read_fn = Keyword.get(opts, :read_fn, &File.read/1)
+
     {:ok, date} = Date.from_iso8601(date_string)
-    
+
     read_fn.("bank_holidays.json")
     |> chain(&Jason.decode/1)
     |> fapply(&find_next_date(&1, date, territory))
@@ -14,13 +16,15 @@ defmodule FunEx.V7.TimeOffService do
   end
 
   def find_next_date(data, date, territory) do
-    bank_holidays = data
+    bank_holidays =
+      data
       |> Map.get(territory, %{})
       |> Map.get("events", [])
 
     bank_holidays
-    |> Enum.find(fn(bank_holiday) ->
-      {:ok, bank_holiday_date} = bank_holiday
+    |> Enum.find(fn bank_holiday ->
+      {:ok, bank_holiday_date} =
+        bank_holiday
         |> Map.get("date", "2020-01-01")
         |> Date.from_iso8601()
 
@@ -34,11 +38,13 @@ defmodule FunEx.V7.TimeOffService do
   def fapply({:ok, data}, function) do
     {:ok, function.(data)}
   end
+
   def fapply({:error, error}, _function), do: {:error, error}
 
   def map({:ok, data}, iteration_fn) do
     {:ok, Enum.map(data, iteration_fn)}
   end
+
   def map({:error, error}, _iteration_fn), do: {:error, error}
 
   def fold({:ok, data}, success_fn, _error_fn), do: success_fn.(data)

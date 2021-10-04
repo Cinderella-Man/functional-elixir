@@ -1,8 +1,8 @@
 defmodule FunEx.V5.TimeOffGenServer do
   use GenServer
 
-  def start_link(args) do
-    GenServer.start_link(__MODULE__, args)
+  def start_link() do
+    GenServer.start_link(__MODULE__, nil)
   end
 
   def init(_args), do: {:ok, nil}

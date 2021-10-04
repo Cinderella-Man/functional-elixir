@@ -1,8 +1,8 @@
 defmodule FunEx.V1.TimeOffGenServer do
   use GenServer
 
-  def start_link(args) do
-    GenServer.start_link(__MODULE__, args)
+  def start_link() do
+    GenServer.start_link(__MODULE__, nil)
   end
 
   def init(_args), do: {:ok, nil}
@@ -12,14 +12,16 @@ defmodule FunEx.V1.TimeOffGenServer do
     {:ok, json} = File.read("bank_holidays.json")
     {:ok, data} = Jason.decode(json)
 
-    bank_holidays = data
+    bank_holidays =
+      data
       |> Map.get(territory, %{})
       |> Map.get("events", [])
 
     result =
       bank_holidays
-      |> Enum.find(fn(bank_holiday) ->
-        {:ok, bank_holiday_date} = bank_holiday
+      |> Enum.find(fn bank_holiday ->
+        {:ok, bank_holiday_date} =
+          bank_holiday
           |> Map.get("date", "2020-01-01")
           |> Date.from_iso8601()
 

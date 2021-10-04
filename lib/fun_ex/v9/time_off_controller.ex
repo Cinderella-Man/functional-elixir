@@ -3,6 +3,6 @@ defmodule FunEx.V9.TimeOffController do
 
   def next_holiday(conn, %{"date" => date, "territory" => territory}) do
     result = FunEx.V9.TimeOffService.next_holiday(date, territory)
-    render(conn, "index.json", result: result)
+    render(conn, "index.json", result: result.())
   end
 end
