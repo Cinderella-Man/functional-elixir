@@ -1,8 +1,14 @@
 defmodule FunEx.V4.TimeOffService do
+  require Logger
+
   def next_holiday(date_string, territory, opts \\ []) do
     read_fn = Keyword.get(opts, :read_fn, &File.read/1)
+    log_info_fn = Keyword.get(opts, :log_info_fn, &Logger.info/1)
 
     {:ok, date} = Date.from_iso8601(date_string)
+
+    log_info_fn.("Fetching bank holidays")
+
     {:ok, json} = read_fn.("bank_holidays.json")
     {:ok, data} = Jason.decode(json)
 

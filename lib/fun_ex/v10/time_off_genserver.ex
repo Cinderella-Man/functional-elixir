@@ -9,6 +9,6 @@ defmodule FunEx.V10.TimeOffGenServer do
 
   def handle_call({:next_holiday, date, territory}, _from, state) do
     result = FunEx.V10.TimeOffService.next_holiday(date, territory)
-    {:reply, result.(), state}
+    {:reply, result, state}
   end
 end

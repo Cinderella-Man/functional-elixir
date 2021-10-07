@@ -1,6 +1,8 @@
 defmodule FunEx.V1.TimeOffGenServer do
   use GenServer
 
+  require Logger
+
   def start_link() do
     GenServer.start_link(__MODULE__, nil)
   end
@@ -9,6 +11,9 @@ defmodule FunEx.V1.TimeOffGenServer do
 
   def handle_call({:next_holiday, date_string, territory}, _from, state) do
     {:ok, date} = Date.from_iso8601(date_string)
+
+    Logger.info("Fetching bank holidays")
+
     {:ok, json} = File.read("bank_holidays.json")
     {:ok, data} = Jason.decode(json)
 

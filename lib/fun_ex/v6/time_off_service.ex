@@ -1,28 +1,12 @@
 defmodule FunEx.V6.TimeOffService do
-  require Logger
+  alias FunEx.V6.StorageService
 
-  def next_holiday(date_string, territory, opts \\ []) do
-    read_fn = Keyword.get(opts, :read_fn, &File.read/1)
+  @storage_service Application.get_env(:fun_ex, :storage_service, StorageService)
 
-    case Date.from_iso8601(date_string) do
-      {:ok, date} ->
-        case read_fn.("bank_holidays.json") do
-          {:ok, json} ->
-            case Jason.decode(json) do
-              {:ok, data} -> find_next_date(data, date, territory)
-              _ -> Logger.error("Unable to decode JSON")
-            end
+  def next_holiday(date_string, territory) do
+    {:ok, date} = Date.from_iso8601(date_string)
+    {:ok, data} = @storage_service.fetch_holidays()
 
-          _ ->
-            Logger.error("Unable to read bank holidays file")
-        end
-
-      _ ->
-        Logger.warn("Invalid date passed")
-    end
-  end
-
-  def find_next_date(data, date, territory) do
     bank_holidays =
       data
       |> Map.get(territory, %{})
