@@ -6,12 +6,12 @@ defmodule FunEx.V13.TimeOffService do
   @storage_service Application.get_env(:fun_ex, :storage_service, StorageService)
   @logger Application.get_env(:fun_ex, :logger, Logger)
 
-  def next_holiday(date_string, territory) do
-    fn -> @storage_service.fetch_holidays() end
+  def next_holiday(date, territory) do
+    fn -> Date.from_iso8601(date) end
     |> fold(
-      fn data ->
-        Date.from_iso8601(date_string)
-        |> fapply(&find_next_date(data, &1, territory))
+      fn _date ->
+        @storage_service.fetch_holidays()
+        |> fapply(&find_next_date(&1, date, territory))
       end,
       &{:error, &1}
     )
@@ -28,14 +28,7 @@ defmodule FunEx.V13.TimeOffService do
       |> Map.get("events", [])
 
     bank_holidays
-    |> Enum.find(fn bank_holiday ->
-      {:ok, bank_holiday_date} =
-        bank_holiday
-        |> Map.get("date", "2020-01-01")
-        |> Date.from_iso8601()
-
-      Timex.diff(bank_holiday_date, date) >= 0
-    end)
+    |> Enum.find(&(&1["date"] >= date))
   end
 
   def chain(acc, function) do

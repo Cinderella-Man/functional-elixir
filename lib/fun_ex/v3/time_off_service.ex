@@ -2,6 +2,8 @@ defmodule FunEx.V3.TimeOffService do
   require Logger
 
   def next_holiday(date, territory, read_fn, log_info_fn) do
+    {:ok, _date} = Date.from_iso8601(date)
+
     log_info_fn.("Fetching bank holidays")
 
     {:ok, json} = read_fn.("bank_holidays.json")

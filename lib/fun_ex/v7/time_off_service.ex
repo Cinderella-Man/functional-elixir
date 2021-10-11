@@ -4,6 +4,8 @@ defmodule FunEx.V7.TimeOffService do
   @storage_service Application.get_env(:fun_ex, :storage_service, StorageService)
 
   def next_holiday(date, territory) do
+    {:ok, _date} = Date.from_iso8601(date)
+
     {:ok, data} = @storage_service.fetch_holidays()
 
     find_next_date(data, date, territory)

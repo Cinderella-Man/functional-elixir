@@ -5,6 +5,8 @@ defmodule FunEx.V5.TimeOffService do
   @file_module Application.get_env(:fun_ex, :file, File)
 
   def next_holiday(date, territory) do
+    {:ok, _date} = Date.from_iso8601(date)
+
     @logger.info("Fetching bank holidays")
 
     {:ok, json} = @file_module.read("bank_holidays.json")
