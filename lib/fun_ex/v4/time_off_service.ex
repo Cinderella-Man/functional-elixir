@@ -1,11 +1,9 @@
 defmodule FunEx.V4.TimeOffService do
   require Logger
 
-  def next_holiday(date_string, territory, opts \\ []) do
+  def next_holiday(date, territory, opts \\ []) do
     read_fn = Keyword.get(opts, :read_fn, &File.read/1)
     log_info_fn = Keyword.get(opts, :log_info_fn, &Logger.info/1)
-
-    {:ok, date} = Date.from_iso8601(date_string)
 
     log_info_fn.("Fetching bank holidays")
 
@@ -18,13 +16,6 @@ defmodule FunEx.V4.TimeOffService do
       |> Map.get("events", [])
 
     bank_holidays
-    |> Enum.find(fn bank_holiday ->
-      {:ok, bank_holiday_date} =
-        bank_holiday
-        |> Map.get("date", "2020-01-01")
-        |> Date.from_iso8601()
-
-      Timex.diff(bank_holiday_date, date) >= 0
-    end)
+    |> Enum.find(&(&1["date"] >= date))
   end
 end

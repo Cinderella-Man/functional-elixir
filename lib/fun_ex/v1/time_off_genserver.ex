@@ -9,9 +9,7 @@ defmodule FunEx.V1.TimeOffGenServer do
 
   def init(_args), do: {:ok, nil}
 
-  def handle_call({:next_holiday, date_string, territory}, _from, state) do
-    {:ok, date} = Date.from_iso8601(date_string)
-
+  def handle_call({:next_holiday, date, territory}, _from, state) do
     Logger.info("Fetching bank holidays")
 
     {:ok, json} = File.read("bank_holidays.json")
@@ -24,14 +22,7 @@ defmodule FunEx.V1.TimeOffGenServer do
 
     result =
       bank_holidays
-      |> Enum.find(fn bank_holiday ->
-        {:ok, bank_holiday_date} =
-          bank_holiday
-          |> Map.get("date", "2020-01-01")
-          |> Date.from_iso8601()
-
-        Timex.diff(bank_holiday_date, date) >= 0
-      end)
+      |> Enum.find(&(&1["date"] >= date))
 
     {:reply, result, state}
   end

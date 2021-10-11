@@ -3,9 +3,7 @@ defmodule FunEx.V1.TimeOffController do
 
   require Logger
 
-  def next_holiday(conn, %{"date" => date_string, "territory" => territory}) do
-    {:ok, date} = Date.from_iso8601(date_string)
-
+  def next_holiday(conn, %{"date" => date, "territory" => territory}) do
     Logger.info("Fetching bank holidays")
 
     {:ok, json} = File.read("bank_holidays.json")
@@ -18,14 +16,7 @@ defmodule FunEx.V1.TimeOffController do
 
     result =
       bank_holidays
-      |> Enum.find(fn bank_holiday ->
-        {:ok, bank_holiday_date} =
-          bank_holiday
-          |> Map.get("date", "2020-01-01")
-          |> Date.from_iso8601()
-
-        Timex.diff(bank_holiday_date, date) >= 0
-      end)
+      |> Enum.find(&(&1["date"] >= date))
 
     render(conn, "index.json", result: result)
   end
