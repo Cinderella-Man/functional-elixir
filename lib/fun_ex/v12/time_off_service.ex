@@ -10,8 +10,8 @@ defmodule FunEx.V12.TimeOffService do
     {:ok, _date} = Date.from_iso8601(date)
 
     fn -> @storage_service.fetch_holidays() end
-    |> fapply(&find_next_date(&1, date, territory))
-    |> fold(& &1, fn error ->
+    |> x_apply(&find_next_date(&1, date, territory))
+    |> x_fold(& &1, fn error ->
       @logger.error("Time Off service error occurred: #{inspect(error)}")
       false
     end)
@@ -27,16 +27,7 @@ defmodule FunEx.V12.TimeOffService do
     |> Enum.find(&(&1["date"] >= date))
   end
 
-  def chain(acc, function) do
-    fn ->
-      case acc.() do
-        {:ok, data} -> function.(data)
-        {:error, error} -> {:error, error}
-      end
-    end
-  end
-
-  def fapply(acc, function) do
+  def x_apply(acc, function) do
     fn ->
       case acc.() do
         {:ok, data} -> {:ok, function.(data)}
@@ -45,16 +36,7 @@ defmodule FunEx.V12.TimeOffService do
     end
   end
 
-  def map(acc, iteration_fn) do
-    fn ->
-      case acc.() do
-        {:ok, data} -> Enum.map(data, iteration_fn)
-        {:error, error} -> {:error, error}
-      end
-    end
-  end
-
-  def fold(acc, success_fn, error_fn) do
+  def x_fold(acc, success_fn, error_fn) do
     fn ->
       case acc.() do
         {:ok, data} -> success_fn.(data)
