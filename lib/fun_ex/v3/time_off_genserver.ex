@@ -3,9 +3,7 @@ defmodule FunEx.V3.TimeOffGenServer do
 
   require Logger
 
-  def start_link() do
-    GenServer.start_link(__MODULE__, nil)
-  end
+  def start_link(), do: GenServer.start_link(__MODULE__, nil)
 
   def init(_args), do: {:ok, nil}
 
